@@ -1,87 +1,45 @@
 <!DOCTYPE html>
-<html lang="{{ config('app.locale') }}">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+@section('htmlheader')
+	@include('layouts.partials.htmlheader')
+@show
+<body class="{{ \App\Models\LAConfigs::getByKey('skin') }} {{ \App\Models\LAConfigs::getByKey('layout') }} @if(\App\Models\LAConfigs::getByKey('layout') == 'sidebar-mini') sidebar-collapse @endif" bsurl="{{ url('') }}" adminRoute="{{ config('laraadmin.adminRoute') }}">
+<div class="wrapper">
+	
+	@include('layouts.partials.mainheader')
+	
+	@if(\App\Models\LAConfigs::getByKey('layout') != 'layout-top-nav')
+		@include('layouts.partials.sidebar')
+	@endif
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper">
+		@if(\App\Models\LAConfigs::getByKey('layout') == 'layout-top-nav') <div class="container"> @endif
+		@if(!isset($no_header))
+			@include('layouts.partials.contentheader')
+		@endif
+		
+		<!-- Main content -->
+		<section class="content {{ $no_padding or '' }}">
+			<!-- Your Page Content Here -->
+			@yield('main-content')
+		</section><!-- /.content -->
 
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+		@if(\App\Models\LAConfigs::getByKey('layout') == 'layout-top-nav') </div> @endif
+	</div><!-- /.content-wrapper -->
 
-    <!-- Scripts -->
-    <script>
-        window.Laravel = {!! json_encode([
-            'csrfToken' => csrf_token(),
-        ]) !!};
-    </script>
-</head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
-            <div class="container">
-                <div class="navbar-header">
+	@include('layouts.partials.controlsidebar')
 
-                    <!-- Collapsed Hamburger -->
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                        <span class="sr-only">Toggle Navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+	@include('layouts.partials.footer')
 
-                    <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
-                    </a>
-                </div>
+</div><!-- ./wrapper -->
 
-                <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="nav navbar-nav">
-                        &nbsp;
-                    </ul>
+@include('layouts.partials.file_manager')
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-right">
-                        <!-- Authentication Links -->
-                        @if (Auth::guest())
-                            <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
-                        @else
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
-                                </a>
+@section('scripts')
+	@include('layouts.partials.scripts')
+@show
 
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <a href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                            Logout
-                                        </a>
-
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endif
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        @yield('content')
-    </div>
-
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
